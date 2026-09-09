@@ -1,2 +1,3 @@
-# Трекер текцщего курса валют
+# Currency alert tracker
+
 
