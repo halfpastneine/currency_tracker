@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "alerts")
-public class Alerts {
+public class AlertsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Alerts {
     @Column(name = "last_trigger", nullable = false)
     private Instant lastTrigger;
 
-    public Alerts(Long id, String email, String currencyType, BigDecimal targetPrice, Boolean active, Instant lastTrigger) {
+    public AlertsEntity(Long id, String email, String currencyType, BigDecimal targetPrice, Boolean active, Instant lastTrigger) {
         this.id = id;
         this.email = email;
         this.currencyType = currencyType;

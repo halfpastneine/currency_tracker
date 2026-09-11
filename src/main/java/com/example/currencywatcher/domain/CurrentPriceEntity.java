@@ -8,7 +8,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "current_price")
-public class CurrentPrice {
+public class CurrentPriceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class CurrentPrice {
     @Column(name = "time_fetched", nullable = false)
     private Instant timeFetched;
 
-    public CurrentPrice(Long id, String currencyType, BigDecimal currentPrice, Instant timeFetched) {
+    public CurrentPriceEntity(Long id, String currencyType, BigDecimal currentPrice, Instant timeFetched) {
         this.id = id;
         this.currencyType = currencyType;
         this.currentPrice = currentPrice;
