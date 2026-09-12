@@ -48,6 +48,7 @@ public class AlertSchedulerService {
                         || (!alert.isUp() && alert.getTargetPrice().compareTo(curPrice.getCurrentPrice()) >= 0)) {
                     notificationService.sendAlert(alert, curPrice.getCurrentPrice());
                     alert.setActive(false);
+                    repository.save(alert);
                     log.info("Alert was triggered, id = {}, base = {}, quote = {}, price = {}",
                             alert.getId(), alert.getBase(), alert.getQuote(), alert.getTargetPrice()
                     );
@@ -63,3 +64,5 @@ public class AlertSchedulerService {
 
 
 }
+
+

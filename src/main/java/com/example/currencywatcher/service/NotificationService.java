@@ -31,7 +31,7 @@ public class NotificationService {
             sender.send(msg);
             logger.info("Email sent to={}", alert.getEmail());
         } catch (RuntimeException e) {
-            logger.error("Couldn't send message to={}", alert.getEmail());
+            logger.error("Couldn't send message to={} {}", alert.getEmail(), e.getMessage());
         }
     }
 
