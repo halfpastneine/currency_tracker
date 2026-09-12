@@ -1,5 +1,6 @@
 package com.example.currencywatcher.client;
 
+import com.example.currencywatcher.domain.Type;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -67,5 +68,15 @@ public class CoinGeckoClient implements PriceClient{
             throw clientErrorHandler.fromRestClientException(API_NAME, query, re);
         }
 
+    }
+
+    @Override
+    public Type is() {
+        return Type.CRYPTO;
+    }
+
+    @Override
+    public String getApiName() {
+        return API_NAME;
     }
 }

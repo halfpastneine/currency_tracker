@@ -1,6 +1,7 @@
 package com.example.currencywatcher.client;
 
 
+import com.example.currencywatcher.domain.Type;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -47,5 +48,15 @@ public class FrankfurterClient implements PriceClient {
         } catch (RestClientException re) {
             throw clientErrorHandler.fromRestClientException(API_NAME, query, re);
         }
+    }
+
+    @Override
+    public Type is() {
+        return Type.FIAT;
+    }
+
+    @Override
+    public String getApiName() {
+        return API_NAME;
     }
 }

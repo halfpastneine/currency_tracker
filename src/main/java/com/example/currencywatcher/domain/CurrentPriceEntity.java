@@ -14,8 +14,18 @@ public class CurrentPriceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "currency_type", nullable = false, length = 64)
-    private String currencyType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    private Type type;
+
+    @Column(name = "api_name", nullable = false, length = 64)
+    private String apiName;
+
+    @Column(nullable = false, length = 64)
+    private String base;
+
+    @Column(nullable = false, length = 64)
+    private String quote;
 
     @Column(name = "current_price", nullable = false, precision = 24, scale = 8)
     private BigDecimal currentPrice;
@@ -23,9 +33,13 @@ public class CurrentPriceEntity {
     @Column(name = "time_fetched", nullable = false)
     private Instant timeFetched;
 
-    public CurrentPriceEntity(Long id, String currencyType, BigDecimal currentPrice, Instant timeFetched) {
-        this.id = id;
-        this.currencyType = currencyType;
+    protected CurrentPriceEntity() {}
+
+    public CurrentPriceEntity(Type type, String apiName, String base, String quote, BigDecimal currentPrice, Instant timeFetched) {
+        this.type = type;
+        this.apiName = apiName;
+        this.base = base;
+        this.quote = quote;
         this.currentPrice = currentPrice;
         this.timeFetched = timeFetched;
     }
@@ -34,8 +48,20 @@ public class CurrentPriceEntity {
         return id;
     }
 
-    public String getCurrencyType() {
-        return currencyType;
+    public Type getType() {
+        return type;
+    }
+
+    public String getApiName() {
+        return apiName;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public String getQuote() {
+        return quote;
     }
 
     public BigDecimal getCurrentPrice() {

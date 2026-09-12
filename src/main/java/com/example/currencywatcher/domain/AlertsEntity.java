@@ -14,62 +14,83 @@ public class AlertsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 255)
-    private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16)
+    private Type type;
 
     @Column(name = "api_name", nullable = false, length = 64)
     private String apiName;
 
-    @Column(name = "currency_type", nullable = false, length = 64)
-    private String currencyType;
+    @Column(nullable = false, length = 64)
+    private String base;
+
+    @Column(nullable = false, length = 64)
+    private String quote;
+
+    @Column(nullable = false)
+    private boolean up;
 
     @Column(name = "target_price", nullable = false, precision = 24, scale = 8)
     private BigDecimal targetPrice;
 
     @Column(nullable = false)
-    private Boolean active;
+    private boolean active;
 
-    @Column(name = "last_trigger", nullable = false)
-    private Instant lastTrigger;
+    @Column(nullable = false, length = 255)
+    private String email;
 
-    public AlertsEntity(Long id, String email, String currencyType, BigDecimal targetPrice, Boolean active, Instant lastTrigger) {
-        this.id = id;
-        this.email = email;
-        this.currencyType = currencyType;
+
+
+    protected AlertsEntity() {}
+
+    public AlertsEntity(Type type, String apiName, String base, String quote, boolean up, BigDecimal targetPrice, boolean active, String email) {
+        this.type = type;
+        this.apiName = apiName;
+        this.base = base;
+        this.quote = quote;
+        this.up = up;
         this.targetPrice = targetPrice;
         this.active = active;
-        this.lastTrigger = lastTrigger;
+        this.email = email;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    public Type getType() {
+        return type;
     }
 
-    public String getCurrencyType() {
-        return currencyType;
+    public String getApiName() {
+        return apiName;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public String getQuote() {
+        return quote;
+    }
+
+    public boolean isUp() {
+        return up;
     }
 
     public BigDecimal getTargetPrice() {
         return targetPrice;
     }
 
-    public Boolean isActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public Instant getLastTrigger() {
-        return lastTrigger;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLastTrigger(Instant lastTrigger) {
-        this.lastTrigger = lastTrigger;
-    }
-
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 }
