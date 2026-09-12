@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public interface PriceClient {
 
-    BigDecimal fetch(String base, String quote);
+    ApiResponse fetch(String base, String quote);
 }

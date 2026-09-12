@@ -10,9 +10,12 @@ public class CoinGeckoClientTest {
 
     @Test
     void fetchReturnsRate() {
-        CoinGeckoClient client = new CoinGeckoClient(RestClient.builder(), "https://api.coingecko.com", "CG-QbjpP9hofdGZKrNvzxdcpP4U");
+        CoinGeckoClient client = new CoinGeckoClient(RestClient.builder(),
+                "https://api.coingecko.com",
+                "",
+                    new ClientErrorHandler());
         var result = client.fetch("bitcoin", "usd");
         System.out.println("======" + result + "======");
-        assertThat(result).isPositive();
+        assertThat(result.price()).isPositive();
     }
 }

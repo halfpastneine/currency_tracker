@@ -2,6 +2,7 @@ package com.example.currencywatcher.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -12,18 +13,22 @@ public class CoinGeckoClient implements PriceClient{
 
     private final RestClient client;
     private final String apiKey;
+    private final ClientErrorHandler clientErrorHandler;
+    private final String API_NAME = "COIN GECKO";
 
     public CoinGeckoClient(RestClient.Builder builder,
                            @Value("${app.api.c_g-url}") String url,
-                           @Value("${app.api.c-api-key:}") String apiKey) {
+                           @Value("${app.api.c-api-key:}") String apiKey, ClientErrorHandler clientErrorHandler) {
         this.client = builder.baseUrl(url).build();
         this.apiKey = apiKey;
+        this.clientErrorHandler = clientErrorHandler;
     }
 
     @Override
-    public BigDecimal fetch(String base, String quote) {
+    public ApiResponse fetch(String base, String quote) {
         String coinId = base.toLowerCase(Locale.ROOT);
         String quoteId = quote.toLowerCase(Locale.ROOT);
+        String query = String.format("{%s}/{%s}", coinId, quoteId);
 
         try {
             Map<?, ?> body = client.get()
@@ -36,22 +41,31 @@ public class CoinGeckoClient implements PriceClient{
                     .retrieve()
                     .body(Map.class);
 
+            if (body == null) {
+                throw clientErrorHandler.invalidResponse(API_NAME, query);
+            }
+
             Object coinData = body.get(coinId);
 
             if (!(coinData instanceof Map<?,?> coinMap)) {
-                throw new IllegalArgumentException();
+                throw clientErrorHandler.clientError(API_NAME, query);
             }
 
-            Object rawPrice = coinMap.get(quoteId);
+            Object price = coinMap.get(quoteId);
 
-            return new BigDecimal(rawPrice.toString());
+            if (!(price instanceof Number) && !(price instanceof String)) {
+                throw clientErrorHandler.invalidResponse(API_NAME, query);
+            }
 
+            try {
+                return new ApiResponse(API_NAME, new BigDecimal(price.toString()));
+            } catch (NumberFormatException e) {
+                throw clientErrorHandler.invalidResponse(API_NAME, query);
+            }
 
-
-        } catch (Exception e){
-            System.out.println(e.getMessage());
+        } catch (RestClientException re) {
+            throw clientErrorHandler.fromRestClientException(API_NAME, query, re);
         }
 
-        return new BigDecimal(-1);
     }
 }
