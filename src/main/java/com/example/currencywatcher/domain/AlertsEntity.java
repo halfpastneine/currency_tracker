@@ -17,6 +17,9 @@ public class AlertsEntity {
     @Column(nullable = false, length = 255)
     private String email;
 
+    @Column(name = "api_name", nullable = false, length = 64)
+    private String apiName;
+
     @Column(name = "currency_type", nullable = false, length = 64)
     private String currencyType;
 
