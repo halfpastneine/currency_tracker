@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Currency Tracker</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+    <h1>Currency Tracker</h1>
+    <p class="muted">Current exchange rate for fiat and crypto</p>
+
+    <section>
+        <h2>Current exchange rate</h2>
+        <div class="row">
+            <select id="priceType">
+                <option value="FIAT">FIAT</option>
+                <option value="CRYPTO">CRYPTO</option>
+            </select>
+            <input id="priceSymbol" value="EUR" placeholder="EUR или bitcoin">
+            <input id="priceQuote" value="USD" placeholder="USD">
+            <button onclick="loadPrice()">Enter</button>
+        </div>
+        <div id="priceResult" class="result">—</div>
+        <p class="hint">For CRYPTO use  CoinGecko ID: bitcoin, ethereum, solana. e.g. CRYPTO bitcoin USD</p>
+    </section>
+
+    <section>
+        <h2>Create alert</h2>
+        <form id="alertForm">
+            <div class="grid">
+                <label>Type
+                    <select id="alertType">
+                        <option value="FIAT">FIAT</option>
+                        <option value="CRYPTO">CRYPTO</option>
+                    </select>
+                </label>
+                <label>Base
+                    <input id="alertSymbol" value="EUR" required>
+                </label>
+                <label>Quote
+                    <input id="alertQuote" value="USD" required>
+                </label>
+                <label>Direction
+                    <select id="alertDirection">
+                        <option value="UP">UP</option>
+                        <option value="DOWN">DOWN</option>
+                    </select>
+                </label>
+                <label>Price
+                    <input id="alertTarget" type="number" step="0.00000001" value="1.20" required>
+                </label>
+                <label>Email
+                    <input id="alertEmail" type="email" value="demo@example.com" required>
+                </label>
+            </div>
+            <button type="submit">Create alert</button>
+        </form>
+        <div id="formMessage" class="muted"></div>
+    </section>
+
+
+
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

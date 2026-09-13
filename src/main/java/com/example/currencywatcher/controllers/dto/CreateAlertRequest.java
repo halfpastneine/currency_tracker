@@ -17,7 +17,6 @@ public record CreateAlertRequest (
         @Size(max = 64)
         String quote,
 
-        @NotNull
         boolean up,
 
         @NotNull

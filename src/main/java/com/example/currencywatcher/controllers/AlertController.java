@@ -2,6 +2,7 @@ package com.example.currencywatcher.controllers;
 
 import com.example.currencywatcher.controllers.dto.CreateAlertRequest;
 import com.example.currencywatcher.domain.AlertsEntity;
+import com.example.currencywatcher.domain.Type;
 import com.example.currencywatcher.repository.AlertsRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
 
 
 @RestController
@@ -52,9 +54,9 @@ public class AlertController {
     }
 
 
-    private String resolveApiName(com.example.currencywatcher.domain.Type type) {
+    private String resolveApiName(Type type) {
         return switch (type) {
-            case CRYPTO -> "CoinGecko";
+            case CRYPTO -> "COIN GECKO";
             case FIAT -> "Frankfurter";
         };
     }

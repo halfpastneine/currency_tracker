@@ -28,7 +28,9 @@ public class AlertSchedulerService {
     }
 
 
-    @Scheduled(fixedDelayString = "${app.alerts:60000}")
+    @Scheduled(
+            fixedDelayString   = "${app.alerts:60000}",
+            initialDelayString = "${app.alerts.initial-delay:0}")
     public void checkAlerts() {
         var alerts = repository.findByActiveTrueOrderByIdAsc();
         if (alerts.isEmpty()) return;
@@ -37,12 +39,9 @@ public class AlertSchedulerService {
 
         for (var alert : alerts) {
             try {
-                CurrentPriceEntity curPrice = priceService.requestAndSave(
-                        alert.getType(), alert.getBase(), alert.getQuote()
+                CurrentPriceEntity curPrice = priceService.save(
+                        priceService.fetch(alert.getType(), alert.getBase(), alert.getQuote())
                 );
-                if (!alert.getActive()) {
-                    continue;
-                }
 
                 if ((alert.isUp() && alert.getTargetPrice().compareTo(curPrice.getCurrentPrice()) <= 0)
                         || (!alert.isUp() && alert.getTargetPrice().compareTo(curPrice.getCurrentPrice()) >= 0)) {
@@ -56,13 +55,13 @@ public class AlertSchedulerService {
             } catch (ClientException e) {
                 log.error("Couldn't check alert id = {}, {}", alert.getId(), e.getMessage());
             } catch (RuntimeException e) {
-                // TODO!()
+                String message = "Error in alert, id = %s, base = %s, quote = %s, price = %s".formatted(
+                        alert.getId(), alert.getBase(), alert.getQuote(), alert.getTargetPrice());
+                monitoringService.reportAppError(message, e);
             }
         }
 
     }
-
-
 }
 
 

@@ -2,6 +2,7 @@ package com.example.currencywatcher.client;
 
 import com.example.currencywatcher.domain.Type;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -10,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+@Component
 public class CoinGeckoClient implements PriceClient{
 
     private final RestClient client;
@@ -38,7 +40,7 @@ public class CoinGeckoClient implements PriceClient{
                             .queryParam("ids", coinId)
                             .queryParam("vs_currencies", quoteId)
                             .build())
-                    .header("x-cg-pro-api-key", apiKey)
+                    .header("x-cg-demo-api-key", apiKey)
                     .retrieve()
                     .body(Map.class);
 

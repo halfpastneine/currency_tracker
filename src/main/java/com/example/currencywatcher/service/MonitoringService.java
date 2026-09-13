@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class MonitoringService {
@@ -20,7 +20,7 @@ public class MonitoringService {
     private final JavaMailSender sender;
     private final String sendTo;
     private final Duration timeout;
-    private final Map<String, Instant> lastSendMail = new HashMap<>();
+    private final Map<String, Instant> lastSendMail = new ConcurrentHashMap<>();
 
     public MonitoringService(JavaMailSender sender,
                              @Value("${app.mail.monitoring_email}") String sendTo) {
@@ -70,6 +70,13 @@ public class MonitoringService {
         }
     }
 
+    public void reportAppError(String message, Throwable e) {
+        log.error("Application problem: message={}", message, e);
+        sendEmail("[APP LEVEL ERROR]", message);
+    }
+
+    @Value("${app.mail.from}")
+    private String from;
 
     private void sendEmail(String problem, String message) {
 
@@ -84,9 +91,11 @@ public class MonitoringService {
         try {
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(sendTo);
+            msg.setFrom(from);
             msg.setSubject(problem);
             msg.setText(message);
             sender.send(msg);
+            lastSendMail.put(problem, now);
             log.info("Monitoring email was sent to={}, problem={}", sendTo, problem);
         } catch (RuntimeException e) {
             log.error("Couldn't send monitoring message to={}, problem={}", sendTo, problem);

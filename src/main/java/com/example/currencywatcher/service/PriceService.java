@@ -28,24 +28,26 @@ public class PriceService {
         this.currentPriceRepository = currentPriceRepository;
     }
 
-    @Transactional
-    public CurrentPriceEntity requestAndSave(Type type, String base, String quote) {
+    public CurrentPriceEntity fetch(Type type, String base, String quote) {
         var client = clients.get(type);
-
         if (client == null) {
             throw new IllegalArgumentException("Unsupported client for type: " + type);
         }
 
         ApiResponse res = client.fetch(base, quote);
 
-        CurrentPriceEntity currentPriceEntity = new CurrentPriceEntity(
+        return new CurrentPriceEntity(
                 type,
                 client.getApiName(),
                 base,
                 quote,
                 res.price(),
-                Instant.now());
+                Instant.now()
+        );
+    }
 
-        return currentPriceRepository.save(currentPriceEntity);
+    @Transactional
+    public CurrentPriceEntity save(CurrentPriceEntity entity) {
+        return currentPriceRepository.save(entity);
     }
 }

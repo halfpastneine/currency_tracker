@@ -2,10 +2,21 @@ server:
   port: 8080
 
 spring:
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/currency_tracker}
-    username: ${DB_USER:admin}
-    password: ${DB_PASSWORD:admin}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -15,3 +26,30 @@ spring:
   flyway:
     enabled: true
 
+
+app:
+  alerts: ${ALERTS_DELAY:60000}
+  api:
+    ff-url: https://api.frankfurter.dev
+    c_g-url: https://api.coingecko.com
+    c-api-key: ${COIN_GECKO_API_KEY}
+  mail:
+    monitoring_email: ${MONITORING_EMAIL}
+    from: ${MAIL_FROM}
+
+
+logging:
+  level:
+    root: INFO
+    com.example.currencywatcher: INFO
+  file:
+    name: logs/app.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

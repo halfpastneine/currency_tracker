@@ -1,5 +1,6 @@
 package com.example.currencywatcher.client;
 
+import com.example.currencywatcher.service.MonitoringService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
@@ -12,6 +13,11 @@ import java.net.http.HttpTimeoutException;
 @Component
 public class ClientErrorHandler {
 
+    private final MonitoringService monitoringService;
+
+    public ClientErrorHandler(MonitoringService monitoringService) {
+        this.monitoringService = monitoringService;
+    }
 
     public ClientException fromRestClientException(String apiName, String query, RestClientException e) {
         Integer httpCode = null;
@@ -28,10 +34,12 @@ public class ClientErrorHandler {
 
         String errorMessage = buildMessage(apiName, httpCode, errorType, query);
 
-        return new ClientException(
+        var error =  new ClientException(
                 errorMessage, e, apiName, httpCode, errorType, query
         );
 
+        monitoringService.reportError(error);
+        return error;
     }
 
     private String buildMessage(String apiName, Integer httpCode, ClientErrorType errorType, String query) {
@@ -44,31 +52,40 @@ public class ClientErrorHandler {
     }
 
     public ClientException invalidApi(String apiName, String query) {
-        return new ClientException(
+        var error =  new ClientException(
                 buildMessage(apiName, null, ClientErrorType.API_CONFIGURATION_ERROR, query),
                 apiName, null, ClientErrorType.API_CONFIGURATION_ERROR, query
         );
+
+        monitoringService.reportError(error);
+        return error;
     }
 
     public ClientException invalidResponse(String apiName, String query) {
-        return new ClientException(
+        var error =  new ClientException(
                 buildMessage(apiName, null, ClientErrorType.INVALID_RESPONSE, query),
                 apiName, null, ClientErrorType.INVALID_RESPONSE, query
         );
+
+        monitoringService.reportError(error);
+        return error;
     }
 
     public ClientException clientError(String apiName, String query) {
-        return new ClientException(
+        var error = new ClientException(
                 buildMessage(apiName, null, ClientErrorType.CLIENT_ERROR, query),
                 apiName, null, ClientErrorType.CLIENT_ERROR, query
         );
+
+        monitoringService.reportError(error);
+        return error;
     }
 
 
 
     private ClientErrorType getHttpError(Integer httpCode) {
         switch (httpCode) {
-            case 400 -> {
+            case 400, 422 -> {
                 return ClientErrorType.CLIENT_ERROR;
             }
             case 401, 403 -> {

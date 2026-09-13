@@ -26,9 +26,9 @@ public class PriceController {
     public CurrentPriceEntity getPrice(
             @RequestParam Type type,
             @RequestParam @NotBlank String base,
-            @RequestParam String quote
+            @RequestParam @NotBlank String quote
     ) {
-        return priceService.requestAndSave(type, base, quote);
+        return priceService.save(priceService.fetch(type, base, quote));
     }
 
 
