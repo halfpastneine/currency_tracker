@@ -4,6 +4,9 @@
 # Log file
 *.log
 
+# Env
+.env
+
 # BlueJ files
 *.ctxt
 
@@ -23,7 +26,7 @@
 hs_err_pid*
 replay_pid*
 
-
 # directories
 /.idea/
 /target/
+/logs/
