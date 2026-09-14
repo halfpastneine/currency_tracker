@@ -101,7 +101,7 @@ docker compose up --build
 ### Тесты бэкенда
 
 ```bash
-./mvnw test
+mvn test
 ```
 
 Интеграционные тесты используют Testcontainers (требуется запущенный Docker).
